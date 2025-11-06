@@ -1,37 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 import { Download, ArrowRight, Linkedin } from 'lucide-react';
 
 export default function Hero() {
   const containerRef = useRef(null);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
-
-  // Smooth cursor spotlight coords
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 120, damping: 20 });
-  const sy = useSpring(my, { stiffness: 120, damping: 20 });
+  const [spot, setSpot] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      const rect = containerRef.current?.getBoundingClientRect();
-      if (!rect) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onMove = (e) => {
+      const rect = el.getBoundingClientRect();
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
-      mx.set(relX);
-      my.set(relY);
+      setSpot({ x: relX, y: relY });
 
-      const x = (relX - rect.width / 2) / rect.width;
-      const y = (relY - rect.height / 2) / rect.height;
-      setParallax({ x, y });
+      const px = (relX - rect.width / 2) / rect.width;
+      const py = (relY - rect.height / 2) / rect.height;
+      setParallax({ x: px, y: py });
     };
-    const el = containerRef.current;
-    el?.addEventListener('mousemove', handleMouseMove);
-    return () => el?.removeEventListener('mousemove', handleMouseMove);
-  }, [mx, my]);
 
-  // Magnetic button helper
+    el.addEventListener('mousemove', onMove);
+    return () => el.removeEventListener('mousemove', onMove);
+  }, []);
+
+  // Magnetic button helper (safe, no external deps)
   const useMagnetic = () => {
     const ref = useRef(null);
     const [style, setStyle] = useState({ transform: 'translate3d(0,0,0)' });
@@ -65,11 +61,11 @@ export default function Hero() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/70" />
       </div>
 
-      {/* Cursor spotlight following mouse (soft, subtle) */}
-      <motion.div
-        className="pointer-events-none absolute inset-0"
+      {/* Cursor spotlight following mouse (subtle) */}
+      <div
+        className="pointer-events-none absolute inset-0 transition-[background] duration-100"
         style={{
-          background: sx && sy ? sx.to((x) => `radial-gradient(500px at ${x}px ${sy.get()}px, rgba(124, 58, 237, 0.12), transparent 60%)`) : undefined,
+          background: `radial-gradient(500px at ${spot.x}px ${spot.y}px, rgba(124,58,237,0.12), transparent 60%)`,
         }}
       />
 

@@ -2,6 +2,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
+import SectionBoundary from './components/SectionBoundary';
 
 function App() {
   return (
@@ -18,10 +19,10 @@ function App() {
       </header>
 
       <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
+        <SectionBoundary name="Hero"><Hero /></SectionBoundary>
+        <SectionBoundary name="About"><About /></SectionBoundary>
+        <SectionBoundary name="Skills"><Skills /></SectionBoundary>
+        <SectionBoundary name="Projects"><Projects /></SectionBoundary>
       </main>
     </div>
   );
