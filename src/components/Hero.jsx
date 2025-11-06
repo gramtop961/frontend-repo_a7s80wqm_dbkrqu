@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 import { Download, ArrowRight, Linkedin } from 'lucide-react';
 
 export default function Hero() {
   const containerRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
+
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [spot, setSpot] = useState({ x: 0, y: 0 });
+  const rafRef = useRef(0);
+  const targetRef = useRef({ x: 0, y: 0, px: 0, py: 0 });
 
   useEffect(() => {
     const el = containerRef.current;
@@ -16,27 +20,37 @@ export default function Hero() {
       const rect = el.getBoundingClientRect();
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
-      setSpot({ x: relX, y: relY });
-
       const px = (relX - rect.width / 2) / rect.width;
       const py = (relY - rect.height / 2) / rect.height;
-      setParallax({ x: px, y: py });
+      targetRef.current = { x: relX, y: relY, px, py };
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(() => {
+          const { x, y, px: tx, py: ty } = targetRef.current;
+          setSpot({ x, y });
+          setParallax({ x: tx, y: ty });
+          rafRef.current = 0;
+        });
+      }
     };
 
-    el.addEventListener('mousemove', onMove);
-    return () => el.removeEventListener('mousemove', onMove);
+    el.addEventListener('mousemove', onMove, { passive: true });
+    return () => {
+      el.removeEventListener('mousemove', onMove);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
-  // Magnetic button helper (safe, no external deps)
+  // Magnetic button helper (lightweight, no extra deps)
   const useMagnetic = () => {
     const ref = useRef(null);
     const [style, setStyle] = useState({ transform: 'translate3d(0,0,0)' });
     const onMouseMove = (e) => {
+      if (prefersReducedMotion) return;
       const rect = ref.current?.getBoundingClientRect();
       if (!rect) return;
       const dx = e.clientX - (rect.left + rect.width / 2);
       const dy = e.clientY - (rect.top + rect.height / 2);
-      setStyle({ transform: `translate3d(${dx * 0.08}px, ${dy * 0.08}px, 0)` });
+      setStyle({ transform: `translate3d(${dx * 0.06}px, ${dy * 0.06}px, 0)` });
     };
     const onMouseLeave = () => setStyle({ transform: 'translate3d(0,0,0)' });
     return { ref, style, onMouseMove, onMouseLeave };
@@ -46,34 +60,62 @@ export default function Hero() {
   const secondaryMag = useMagnetic();
   const tertiaryMag = useMagnetic();
 
+  // Background animated blobs (GPU-friendly) as a visual layer beneath content
+  const blobs = (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <motion.div
+        aria-hidden
+        className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-gradient-to-tr from-pink-400 via-fuchsia-400 to-purple-500 opacity-25 blur-3xl"
+        animate={{ x: [0, 40, -20, 0], y: [0, 20, -10, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden
+        className="absolute bottom-[-4rem] right-[-3rem] h-80 w-80 rounded-full bg-gradient-to-tr from-purple-500 via-fuchsia-400 to-pink-400 opacity-20 blur-3xl"
+        animate={{ x: [0, -30, 20, 0], y: [0, -15, 10, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
+    </div>
+  );
+
+  const parallaxStyle = prefersReducedMotion
+    ? undefined
+    : { transform: `translate3d(${parallax.x * -12}px, ${parallax.y * -12}px, 0)` };
+  const tiltAnimate = prefersReducedMotion
+    ? undefined
+    : { rotateX: parallax.y * -6, rotateY: parallax.x * 6 };
+
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[92vh] w-full overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 text-gray-900 font-sans"
+      className="relative min-h-[92vh] w-full overflow-hidden bg-white text-gray-900 font-sans"
     >
-      {/* 3D Spline background */}
+      {/* 3D Spline background (cover) */}
       <div className="absolute inset-0">
         <Spline
-          scene="https://prod.spline.design/fA4LwfT7IUUelEGO/scene.splinecode"
+          scene="https://prod.spline.design/kqB-rdL4TCJ7pyGb/scene.splinecode"
           style={{ width: '100%', height: '100%' }}
         />
-        {/* Gradient veil to improve text contrast; doesn't block interactions */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/70" />
+        {/* Contrast veil and non-blocking overlay */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/70 via-white/40 to-white/70" />
+        {blobs}
       </div>
 
-      {/* Cursor spotlight following mouse (subtle) */}
-      <div
-        className="pointer-events-none absolute inset-0 transition-[background] duration-100"
-        style={{
-          background: `radial-gradient(500px at ${spot.x}px ${spot.y}px, rgba(124,58,237,0.12), transparent 60%)`,
-        }}
-      />
+      {/* Cursor spotlight (subtle, disabled for reduced motion) */}
+      {!prefersReducedMotion && (
+        <div
+          className="pointer-events-none absolute inset-0 transition-[background] duration-100"
+          style={{
+            background: `radial-gradient(420px at ${spot.x}px ${spot.y}px, rgba(168,85,247,0.12), transparent 60%)`,
+          }}
+        />
+      )}
 
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-12 px-6 py-24 md:flex-row md:gap-10 md:py-28">
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-10 px-6 py-20 md:flex-row md:gap-10 md:py-24">
         {/* Left content */}
         <motion.div
           className="flex-1"
-          style={{ transform: `translate3d(${parallax.x * -12}px, ${parallax.y * -12}px, 0)` }}
+          style={parallaxStyle}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -140,7 +182,6 @@ export default function Hero() {
         {/* Right visual card with a subtle 3D tilt */}
         <motion.div
           className="flex-1"
-          style={{ transform: `translate3d(${parallax.x * 12}px, ${parallax.y * 12}px, 0)` }}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.08 }}
@@ -148,7 +189,7 @@ export default function Hero() {
           <motion.div
             className="mx-auto max-w-sm rounded-2xl bg-white/80 p-3 shadow-xl backdrop-blur-md ring-1 ring-slate-200"
             style={{ transformStyle: 'preserve-3d' }}
-            animate={{ rotateX: parallax.y * -6, rotateY: parallax.x * 6 }}
+            animate={tiltAnimate}
             transition={{ type: 'spring', stiffness: 100, damping: 14 }}
           >
             <div className="overflow-hidden rounded-xl">
@@ -156,6 +197,8 @@ export default function Hero() {
                 src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1200&auto=format&fit=crop"
                 alt="Varshith at work — application support desk"
                 className="h-72 w-full object-cover sm:h-96"
+                loading="eager"
+                decoding="async"
               />
             </div>
             <div className="mt-3 flex items-center justify-between px-1 text-xs text-slate-600">
