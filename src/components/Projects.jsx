@@ -30,7 +30,7 @@ const projects = [
 function ProjectCard({ title, desc, tech, img, idx }) {
   return (
     <motion.div
-      className="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:shadow-lg"
+      className="group overflow-hidden rounded-2xl bg-white/5 shadow-sm ring-1 ring-white/10 transition hover:ring-white/20"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -40,11 +40,11 @@ function ProjectCard({ title, desc, tech, img, idx }) {
         <img src={img} alt={title} className="h-52 w-full object-cover transition duration-300 group-hover:scale-105" />
       </div>
       <div className="space-y-3 p-5">
-        <h4 className="text-lg font-semibold text-slate-900">{title}</h4>
-        <p className="text-sm text-slate-600">{desc}</p>
+        <h4 className="text-lg font-semibold text-white">{title}</h4>
+        <p className="text-sm text-slate-300">{desc}</p>
         <div className="flex flex-wrap gap-2">
           {tech.map((t) => (
-            <span key={t} className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700">
+            <span key={t} className="rounded-full bg-white/10 px-3 py-1 text-xs text-emerald-200 ring-1 ring-white/10">
               {t}
             </span>
           ))}
@@ -56,9 +56,9 @@ function ProjectCard({ title, desc, tech, img, idx }) {
 
 export default function Projects() {
   return (
-    <section id="projects" className="bg-white py-20">
+    <section id="projects" className="bg-[#0b1020] py-20 text-slate-100">
       <div className="mx-auto max-w-7xl px-6">
-        <h3 className="text-2xl font-bold text-slate-900 md:text-3xl">Projects</h3>
+        <h3 className="text-2xl font-bold text-white md:text-3xl">Projects</h3>
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {projects.map((p, idx) => (
             <ProjectCard key={p.title} {...p} idx={idx} />

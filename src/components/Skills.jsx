@@ -31,16 +31,16 @@ function Bar({ label, value }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-slate-700">{label}</span>
-        <span className="text-xs text-slate-500">{value}%</span>
+        <span className="text-sm font-medium text-slate-200">{label}</span>
+        <span className="text-xs text-slate-400">{value}%</span>
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
         <motion.div
           ref={ref}
           initial={{ width: 0 }}
           animate={controls}
           transition={{ duration: 0.9, ease: 'easeOut' }}
-          className="h-full rounded-full bg-slate-900"
+          className="h-full rounded-full bg-emerald-400"
         />
       </div>
     </div>
@@ -49,12 +49,12 @@ function Bar({ label, value }) {
 
 export default function Skills() {
   return (
-    <section id="skills" className="bg-white py-20">
+    <section id="skills" className="bg-[#0b1020] py-20 text-slate-100">
       <div className="mx-auto max-w-7xl px-6">
-        <h3 className="text-2xl font-bold text-slate-900 md:text-3xl">Skills</h3>
+        <h3 className="text-2xl font-bold text-white md:text-3xl">Skills</h3>
         <div className="mt-8 grid gap-10 md:grid-cols-2">
           <div>
-            <h4 className="mb-4 text-lg font-semibold text-slate-800">Technical Skills</h4>
+            <h4 className="mb-4 text-lg font-semibold text-emerald-200">Technical Skills</h4>
             <div className="space-y-4">
               {technical.map((s) => (
                 <Bar key={s.name} label={s.name} value={s.level} />
@@ -62,7 +62,7 @@ export default function Skills() {
             </div>
           </div>
           <div>
-            <h4 className="mb-4 text-lg font-semibold text-slate-800">Professional Skills</h4>
+            <h4 className="mb-4 text-lg font-semibold text-emerald-200">Professional Skills</h4>
             <div className="space-y-4">
               {professional.map((s) => (
                 <Bar key={s.name} label={s.name} value={s.level} />
