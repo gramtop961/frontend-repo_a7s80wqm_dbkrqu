@@ -19,18 +19,18 @@ function App() {
 
   return (
     <div
-      className="min-h-screen bg-white text-slate-900"
+      className="min-h-screen bg-[#0b1020] text-slate-100"
       style={{ fontFamily: 'Geist, Inter, Manrope, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif' }}
     >
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b1020]/70 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <a href="#" className="text-lg font-extrabold tracking-tight">Varshith Poojary</a>
-          <nav className="hidden gap-6 text-sm text-slate-700 md:flex">
-            <a href="#about" className="hover:text-slate-900">About</a>
-            <a href="#skills" className="hover:text-slate-900">Skills</a>
-            <a href="#projects" className="hover:text-slate-900">Projects</a>
-            <a href="#certifications" className="hover:text-slate-900">Certifications</a>
-            <a href="#contact" className="hover:text-slate-900">Contact</a>
+          <a href="#" className="text-lg font-extrabold tracking-tight text-white">Varshith Poojary</a>
+          <nav className="hidden gap-6 text-sm md:flex">
+            <a href="#about" className="text-slate-300 transition hover:text-white">About</a>
+            <a href="#skills" className="text-slate-300 transition hover:text-white">Skills</a>
+            <a href="#projects" className="text-slate-300 transition hover:text-white">Projects</a>
+            <a href="#certifications" className="text-slate-300 transition hover:text-white">Certifications</a>
+            <a href="#contact" className="text-slate-300 transition hover:text-white">Contact</a>
           </nav>
         </div>
       </header>
