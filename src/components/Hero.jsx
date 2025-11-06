@@ -40,7 +40,7 @@ export default function Hero() {
     };
   }, []);
 
-  // Magnetic button helper (lightweight, no extra deps)
+  // Magnetic button helper
   const useMagnetic = () => {
     const ref = useRef(null);
     const [style, setStyle] = useState({ transform: 'translate3d(0,0,0)' });
@@ -60,24 +60,6 @@ export default function Hero() {
   const secondaryMag = useMagnetic();
   const tertiaryMag = useMagnetic();
 
-  // Background animated blobs (GPU-friendly) as a visual layer beneath content
-  const blobs = (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <motion.div
-        aria-hidden
-        className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-gradient-to-tr from-pink-400 via-fuchsia-400 to-purple-500 opacity-25 blur-3xl"
-        animate={{ x: [0, 40, -20, 0], y: [0, 20, -10, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        aria-hidden
-        className="absolute bottom-[-4rem] right-[-3rem] h-80 w-80 rounded-full bg-gradient-to-tr from-purple-500 via-fuchsia-400 to-pink-400 opacity-20 blur-3xl"
-        animate={{ x: [0, -30, 20, 0], y: [0, -15, 10, 0] }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-      />
-    </div>
-  );
-
   const parallaxStyle = prefersReducedMotion
     ? undefined
     : { transform: `translate3d(${parallax.x * -12}px, ${parallax.y * -12}px, 0)` };
@@ -88,25 +70,24 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[92vh] w-full overflow-hidden bg-white text-gray-900 font-sans"
+      className="relative min-h-[92vh] w-full overflow-hidden bg-[#0b1020] text-slate-100 font-sans"
     >
-      {/* 3D Spline background (cover) */}
+      {/* 3D Spline background (dark, cursor‑interactive firefly) */}
       <div className="absolute inset-0">
         <Spline
-          scene="https://prod.spline.design/kqB-rdL4TCJ7pyGb/scene.splinecode"
+          scene="https://prod.spline.design/iO74mq3KeYTXVmpB/scene.splinecode"
           style={{ width: '100%', height: '100%' }}
         />
-        {/* Contrast veil and non-blocking overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/70 via-white/40 to-white/70" />
-        {blobs}
+        {/* Subtle vignette and star glow overlay that doesn't block interaction */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
       </div>
 
-      {/* Cursor spotlight (subtle, disabled for reduced motion) */}
+      {/* Cursor glow spotlight in green hues (disabled for reduced motion) */}
       {!prefersReducedMotion && (
         <div
           className="pointer-events-none absolute inset-0 transition-[background] duration-100"
           style={{
-            background: `radial-gradient(420px at ${spot.x}px ${spot.y}px, rgba(168,85,247,0.12), transparent 60%)`,
+            background: `radial-gradient(360px at ${spot.x}px ${spot.y}px, rgba(16,185,129,0.15), transparent 60%)`,
           }}
         />
       )}
@@ -120,18 +101,18 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1 text-xs font-medium tracking-wide text-slate-700 ring-1 ring-slate-200 backdrop-blur">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+          <motion.p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-emerald-300 ring-1 ring-emerald-500/30 backdrop-blur">
+            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_16px_2px_rgba(16,185,129,0.65)]" />
             Application Support • Software Testing
           </motion.p>
 
-          <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
+          <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
             Varshith Poojary
           </h1>
-          <h2 className="mt-2 text-lg font-semibold text-slate-700 md:text-2xl">
+          <h2 className="mt-2 text-lg font-semibold text-emerald-200 md:text-2xl">
             Reliable, proactive support for mission‑critical apps
           </h2>
-          <p className="mt-4 max-w-xl text-base text-slate-600 md:text-lg">
+          <p className="mt-4 max-w-xl text-base text-slate-300 md:text-lg">
             I keep systems healthy, users happy, and releases smooth — from incident response and root‑cause analysis to test planning and automation.
           </p>
 
@@ -143,11 +124,11 @@ export default function Hero() {
               onMouseLeave={primaryMag.onMouseLeave}
               style={primaryMag.style}
               whileTap={{ scale: 0.98 }}
-              className="group relative inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-white shadow-xl shadow-slate-900/20 transition [transform-style:preserve-3d] hover:bg-slate-800"
+              className="group relative inline-flex items-center justify-center rounded-xl bg-emerald-500 px-6 py-3 text-emerald-950 shadow-xl shadow-emerald-500/20 transition [transform-style:preserve-3d] hover:bg-emerald-400"
             >
               <span className="mr-2">Explore Projects</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              <span className="pointer-events-none absolute -inset-px -z-[1] rounded-xl bg-gradient-to-r from-violet-600/30 via-fuchsia-500/20 to-emerald-500/20 blur-xl" />
+              <span className="pointer-events-none absolute -inset-px -z-[1] rounded-xl bg-emerald-400/20 blur-xl" />
             </motion.a>
 
             <motion.a
@@ -158,9 +139,9 @@ export default function Hero() {
               onMouseLeave={secondaryMag.onMouseLeave}
               style={secondaryMag.style}
               whileTap={{ scale: 0.98 }}
-              className="relative inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-slate-800 shadow-sm transition hover:border-slate-400 hover:shadow"
+              className="relative inline-flex items-center justify-center rounded-xl border border-emerald-400/40 bg-white/5 px-6 py-3 text-slate-100 shadow-sm backdrop-blur transition hover:border-emerald-300/60 hover:bg-white/10"
             >
-              <Download className="mr-2 h-4 w-4" /> Download Resume
+              <Download className="mr-2 h-4 w-4 text-emerald-300" /> Download Resume
             </motion.a>
 
             <motion.a
@@ -172,9 +153,9 @@ export default function Hero() {
               onMouseLeave={tertiaryMag.onMouseLeave}
               style={tertiaryMag.style}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-slate-800 shadow-sm transition hover:border-slate-400 hover:shadow"
+              className="inline-flex items-center justify-center rounded-xl border border-emerald-400/40 bg-white/5 px-5 py-3 text-slate-100 shadow-sm backdrop-blur transition hover:border-emerald-300/60 hover:bg-white/10"
             >
-              <Linkedin className="mr-2 h-4 w-4" /> LinkedIn
+              <Linkedin className="mr-2 h-4 w-4 text-emerald-300" /> LinkedIn
             </motion.a>
           </div>
         </motion.div>
@@ -187,7 +168,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.08 }}
         >
           <motion.div
-            className="mx-auto max-w-sm rounded-2xl bg-white/80 p-3 shadow-xl backdrop-blur-md ring-1 ring-slate-200"
+            className="mx-auto max-w-sm rounded-2xl bg-white/5 p-3 shadow-xl backdrop-blur-md ring-1 ring-white/10"
             style={{ transformStyle: 'preserve-3d' }}
             animate={tiltAnimate}
             transition={{ type: 'spring', stiffness: 100, damping: 14 }}
@@ -201,7 +182,7 @@ export default function Hero() {
                 decoding="async"
               />
             </div>
-            <div className="mt-3 flex items-center justify-between px-1 text-xs text-slate-600">
+            <div className="mt-3 flex items-center justify-between px-1 text-xs text-emerald-200/80">
               <span>On‑call • SRE mindset</span>
               <span>ITIL • RCA • QA</span>
             </div>
